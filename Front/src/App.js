@@ -16,6 +16,7 @@ function App() {
       <Header/>
 
       <Routes>
+        <Route path="/" element={<Edit/>} />
         <Route path="/docs/:query" element={<Docs/>} />
         <Route path="/edit/:query" element={<Edit/>} />
         <Route path="/discuss/:query" element={<Discuss/>} />

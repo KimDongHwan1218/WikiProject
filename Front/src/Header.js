@@ -9,6 +9,11 @@ function Header() {
             else window.location.href = "/search/" + query;
         }
             
+    };
+    const handleOnEnter = e => {
+        if (e.key === 'Enter') {
+          onSubmit(); // Enter 입력이 되면 클릭 이벤트 실행
+        }
       };
   
     return (
@@ -18,7 +23,8 @@ function Header() {
                 onChange={(e) => {
                 setQuery(e.target.value);
                 console.log(query);
-                }}>
+                }}
+                onKeyUp={handleOnEnter}>
             </input>
 
             <button
