@@ -20,11 +20,15 @@ client.connect(err => {
   }
 })
 const querys = {
-  get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev_id = page_current_rev_id and text_id = slot_content_id",
+  get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev = page_current_rev and text = slot_content",
   search_title: "SELECT * FROM page where page_title = $1",
-  search_text: "SELECT * FROM search, page, slots where slot_rev_id = page_current_rev_id and search_id = slot_content_id and search in '%'||$1||'%'",
-  new_page: "INSERT INTO page(page_current_rev_id, page_title) values(0, $1)",
-  new_revision: "INSERT INTO revision(page_current_rev_id, page_title) values(0, $1)",
+  search_content: "SELECT * FROM search, page, slots where slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%'",
+  search_title_content:"SELECT * FROM search, page, slots where (slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%') OR page_title=$1",
+  get_history: "SELECT * FROM "
+  get_diff:
+
+  new_page: "INSERT INTO page(page_current_rev, page_title) values(0, $1)",
+  new_revision: "INSERT INTO revision(page_current_rev, page_title) values(0, $1)",
   load_page_data: "SELECT * FROM page where page_title = $1",
   edit_page: ,
 };
@@ -41,17 +45,47 @@ function query(query, param){
 
 
 app.get('/', (req, res) => {
-  res.send('Server Response Success');
+  res.send('Server Response Success!!!');
 })
 
 app.get('/docs/:document', (req, res) => {
-  document_id = req.params.document
-  console.log(document_id)
-  const result = query(querys.get_document, [document_id])
+  const {document} = req.params
+  const result = query(querys.get_document, [document])
   res.send(result);
 })
 
-app.
+app.get('/search', (req, res) => {
+  const t = (req.query.type ? req.query.type : null)
+  const q = req.query.query
+  const result = null
+  switch(t){
+    case null:
+      result = query(querys.search_title_content, [q])
+    case ('title'):
+      result = query(querys.search_title, [q])
+    case ('content'):
+      result = query(querys.search_content, [q])
+    case ('title_content'):
+      result = query(querys.search_title_content, [q])
+    default: res.send(result);
+  }
+  
+})
+
+app.get('/history/:document', (req, res) => {
+  const {document} = req.params
+  const result = query(querys.get_history, [document])
+  res.send(result);
+})
+
+app.get('/diff/:document', (req, res) => {
+  const {document} = req.params
+  const {rev, revold} = req.query
+  const result = query(querys.get_diff, [document, rev, revold])
+  res.send(result);
+})
+
+app.post
 
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`)
