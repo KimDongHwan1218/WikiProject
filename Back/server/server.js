@@ -20,16 +20,16 @@ client.connect(err => {
   }
 })
 const querys = {
-  get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev = page_current_rev and text = slot_content",
-  search_title: "SELECT * FROM page where page_title = $1",
-  search_content: "SELECT * FROM search, page, slots where slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%'",
-  search_title_content:"SELECT * FROM search, page, slots where (slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%') OR page_title=$1",
-  get_history: "SELECT * FROM "
-  get_diff:
+  get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev = page_current_rev and text = slot_content;",
+  search_title: "SELECT * FROM page where page_title = $1;",
+  search_content: "SELECT * FROM search, page, slots where slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%';",
+  search_title_content:"SELECT * FROM search, page, slots where (slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%') OR page_title=$1;",
+  get_history: "SELECT * FROM revision R NATURAL JOIN page P where page_title = $1;",
+  // get_diff:
 
-  new_page: "INSERT INTO page(page_current_rev, page_title) values(0, $1)",
-  new_revision: "INSERT INTO revision(page_current_rev, page_title) values(0, $1)",
-  load_page_data: "SELECT * FROM page where page_title = $1",
+  new_page: "INSERT INTO page(page_current_rev, page_title) values(0, $1);",
+  new_revision: "INSERT INTO revision(page_current_rev, page_title) values(0, $1);",
+  load_page_data: "SELECT * FROM page where page_title = $1;",
   edit_page: ,
 };
 
@@ -56,7 +56,7 @@ app.get('/docs/:document', (req, res) => {
 
 app.get('/search', (req, res) => {
   const t = (req.query.type ? req.query.type : null)
-  const q = req.query.query
+  const q = req.query.q
   const result = null
   switch(t){
     case null:
@@ -83,9 +83,13 @@ app.get('/diff/:document', (req, res) => {
   const {rev, revold} = req.query
   const result = query(querys.get_diff, [document, rev, revold])
   res.send(result);
+  // we need algorithm 
 })
 
-app.post
+app.post('/edit/:document', (req, res) =>{
+  const {document} = req.params
+  const
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`)

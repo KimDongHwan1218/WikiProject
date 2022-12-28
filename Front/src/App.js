@@ -7,7 +7,8 @@ import Edit from "./components/Edit";
 import Discuss from "./components/Discuss";
 import History from "./components/History";
 import Search from "./components/Search";
-import Header from "./Header"
+import Header from "./Header";
+import NotHome from "./components/NotHome";
 import {  Link, BrowserRouter,  Routes,  Route} from "react-router-dom";
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
       <Header/>
 
       <Routes>
-        <Route path="/" element={<Edit/>} />
+        <Route path="/" element={<NotHome/>} />
         <Route path="/docs/:query" element={<Docs/>} />
         <Route path="/edit/:query" element={<Edit/>} />
         <Route path="/discuss/:query" element={<Discuss/>} />
