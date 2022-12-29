@@ -1,19 +1,17 @@
-console.log('ok');
-
-var editor = document.getElementById('editor');
-var rendered = document.getElementById('rendered');
-var renderButton = document.getElementById('renderButton');
+const editor = document.getElementById('editor');
+const rendered = document.getElementById('rendered');
+const renderButton = document.getElementById('renderButton');
 
 renderButton.addEventListener('click', ()=>{
-  console.log((editor.value))
-  var value = removehtml(editor.value);
+  let value = editor.value
+  value = removehtml(value)
 
   value = check_line_by_line(value)
-  console.log(value)
 
   rendered.innerHTML = value
 });
 
+// 태그 제거
 function removehtml(output){
   output = output.replace(/</g,'&lt;');
   output = output.replace(/<\//g,'&lt;/');
@@ -21,23 +19,13 @@ function removehtml(output){
   return output
 }
 
-// == 문단 머릿글 ==
-// ''머릿글''을 이용하여 문단을 구분해 내용을 입력할 수 있습니다. 위키 소프트웨어는 이를 이용하여 자동으로 목차를 구성하게 됩니다. 두 개의 등호 입력으로 시작됩니다.
-
-// === 하위 문단 ===
-// 등호를 더 사용하면 하위 문단이 만들어집니다.
-
-// ==== 더 작은 하위 문단 ====
-// 두 개에서 바로 네 개의 등호로 단계를 건너뛰지 마세요.
-
-// 엔터 두번
-// 글 내에서 문단을 나누기 위해서 엔터키를 두번 입력합니다.
 
 function check_line_by_line(input){
   input = input.toString().split("\n")
-  var output = ''
+  let output = ''
   input.forEach((value, index, array)=>{
-    var res = check_paragraph(value) 
+    let res = value
+    res = check_paragraph(value) 
     res = check_dividingline(res)
     res = textshape(res)
     res = hyperlink(res)
@@ -46,33 +34,38 @@ function check_line_by_line(input){
   return(output)
 }
 
+// ==h2== ===h3=== ====h4==== =====h5===== ======h6====== 엔터두번은 줄바꿈
+// h1은 문서 제목에만 씀, 문단 제목은 h2
+// h2 밑줄은 hr태그 쓰는게 아니라 나중에 따로 css에서 h2 태그에 border-bottom 스타일로 해야함
 function check_paragraph(input){
-  var heading = /(?<=^==)([^=]+)(?===$)/g
-  var paragraph = /(?<=^===)([^=]+)(?====$)/g
-  var smallparagraph = /(?<=^====)([^=]+)(?=====$)/g
-  if(input.match(heading)) return('<h1>'+input.match(heading)+'</h1>\n<hr>')
-  else if(input.match(paragraph)) return('<h3>'+input.match(paragraph)+'</h3>')
-  else if(input.match(smallparagraph)) return('<h5>'+input.match(smallparagraph)+'</h5>')
-  else if(input == '') return('<br/>') // style로 간격 줄여주기
+  let h2 = /(?<=^==)([^=]+)(?===$)/g
+  let h3 = /(?<=^===)([^=]+)(?====$)/g
+  let h4 = /(?<=^====)([^=]+)(?=====$)/g
+  let h5 = /(?<=^=====)([^=]+)(?======$)/g
+  let h6 = /(?<=^======)([^=]+)(?=======$)/g
+
+  if(input.match(h2)) return('<h2>'+input.match(h2)+'</h2>')
+  else if(input.match(h3)) return('<h3>'+input.match(h3)+'</h3>')
+  else if(input.match(h4)) return('<h4>'+input.match(h4)+'</h4>')
+  else if(input.match(h5)) return('<h5>'+input.match(h5)+'</h5>')
+  else if(input.match(h6)) return('<h6>'+input.match(h6)+'</h6>')
+  else if(input == '') return('<br/>')
   return(input)
 }
 
 // ----으로 구분선
 function check_dividingline(input){
-  var dividing = /^----$/
+  let dividing = /^----$/
   if(input.match(dividing)) return ('<hr>')
   return(input)
 }
 
-// // 엔터 두번으로 문단 구분
-// function check_
-
 // text shape
 function textshape(input){
-  var italic = /''/
-  var bold = /'''/
-  var bold_italic = /'''''/ 
-  var output = input
+  let italic = /''/
+  let bold = /'''/
+  let bold_italic = /'''''/ 
+  let output = input
   while(output.match(bold_italic)){
     output = output.replace(bold_italic, '<i><b>')
     output = output.replace(bold_italic, '</b></i>')
@@ -89,8 +82,8 @@ function textshape(input){
 }
 
 function hyperlink(input){
-  var link = /(?<=\[\[)(.*)(?=\]\])/
-  var output = input
+  let link = /(?<=\[\[)(.*)(?=\]\])/
+  let output = input
   while(output.match(link)) {
     output = output.replace(/\[\[/,`<a href="어쩌구저쩌구/w/${input.match(link)[0]}">`)
     output = output.replace(/\]\]/, '</a>')
