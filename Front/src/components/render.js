@@ -28,7 +28,7 @@ function check_line_by_line(input){
     res = check_paragraph(value) 
     res = check_dividingline(res)
     res = textshape(res)
-    res = hyperlink(res)
+    res = internal_link(res)
     output = output.concat(res,'\n')
   })
   return(output)
@@ -81,12 +81,33 @@ function textshape(input){
   return(output)
 }
 
-function hyperlink(input){
-  let link = /(?<=\[\[)(.*)(?=\]\])/
+// 내부 링크
+function internal_link(input){
+  let link_no_text = /(?<=\[\[)([^\|\[\]]*)(?=\]\])/g // [[문서이름]] 형태
+  let link_text = /(?<=\[\[)([^\|\[\]]*)(?=\|[^\]\|]*\]\])/g //[[문서이름|보일내용]] 의 문서이름 부분
   let output = input
-  while(output.match(link)) {
-    output = output.replace(/\[\[/,`<a href="어쩌구저쩌구/w/${input.match(link)[0]}">`)
-    output = output.replace(/\]\]/, '</a>')
+
+  if(output.match(link_no_text)){
+    let no_text_count = output.match(link_no_text).length
+
+    for(let i = 0 ; i < no_text_count ; i++){
+      output = output.replace(/\[\[([^\|\[\]]*)\]\]/,`<a href="어쩌구저쩌구/w/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
+    }
   }
+  
+  if(output.match(link_text)){
+    let text_count = output.match(link_text).length
+    
+    for(let i = 0 ; i < text_count ; i++){
+      output = output.replace(/\[\[[^\|]*\|/,`<a href="어쩌구저쩌구/w/${input.match(link_text)[i]}">`)
+      output = output.replace(/\]\]/, '</a>')
+    }
+  }
+
   return output
+}
+
+// 외부 링크
+function external_link(input){
+  
 }
