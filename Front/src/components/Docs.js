@@ -2,22 +2,24 @@ import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import { useEffect, useState } from 'react';
+import renderfunction from './render';
 
 const Docs=() =>{
   const params = useParams();
+  console.log("params:", params)
   const query = params.query;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   
   const callApi = async()=>{
-    await axios.get('/api/docs/:document', {params:{document:query}})
+    await axios.get(`/api/docs/${params.query}`)
     .then((res)=>{      
-      const output = res.data.test;
-      if(output.length) {
+      const output = res.data; console.log("output:", output)
+      if(output.length>1) {
         setData(output); console.log(output)
       }
       else{
-        setData([{text_beta:'nothing', slot_role_id:'0'}]); console.log({text_beta:'nothing', slot_role_id:'0'})
+        setData([{text:'nothing', page_id:'0'}]);
       }
     });
   };
@@ -36,8 +38,10 @@ const Docs=() =>{
       <h1>Docs</h1>
       {/* <h2>{loading ? 'Loading...' : JSON.stringify(data)}</h2> */}
       {data.map((row)=>{
+        console.log("row.text.data", row.text)
         return (
-          <div key={row.slot_role_id}>{row.text_beta}</div>
+          
+          <div dangerouslySetInnerHTML={{__html: renderfunction(row.text)}} key={row.text_id}></div>
         )
       })}
       <>끗</>

@@ -10,10 +10,9 @@ const Search= () => {
   const [loading, setLoading] = useState(false);
   
   const callApi = async()=>{
-    // await axios.get('/api/search/:search', {params:{search:query}})
     await axios.get('/api/search/:search', {params:{search:query}})
     .then((res)=>{      
-      const output = res.data.test;
+      const output = res.data;
       if(output.length) {
         setData(output); console.log(output)
       }

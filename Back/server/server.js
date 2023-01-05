@@ -9,6 +9,7 @@ const client = new Client({
 
 const express = require('express');
 const app = express();
+// const test = require('.//Router/test');
 const PORT = process.env.PORT || 4000;
 
 
@@ -20,7 +21,8 @@ client.connect(err => {
   }
 })
 const querys = {
-  get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev = page_current_rev and text = slot_content;",
+  // get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev = page_current_rev and text = slot_content;",
+  get_document: "SELECT * FROM page, text where page_title = $1;",
   search_title: "SELECT * FROM page where page_title = $1;",
   search_content: "SELECT * FROM search, page, slots where slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%';",
   search_title_content:"SELECT * FROM search, page, slots where (slot_rev = page_current_rev and search = slot_content and search in '%'||$1||'%') OR page_title=$1;",
@@ -30,15 +32,14 @@ const querys = {
   new_page: "INSERT INTO page(page_current_rev, page_title) values(0, $1);",
   new_revision: "INSERT INTO revision(page_current_rev, page_title) values(0, $1);",
   load_page_data: "SELECT * FROM page where page_title = $1;",
-  edit_page: ,
 };
 
-function query(query, param){
+const  query = async(query, param)=>{
   client
   .query(query, param)
   .then((res) => {
     console.log(res.rows[0]);
-    client.end();
+    // client.end();
   })
   .catch((e) => console.error(e.stack));
 }
@@ -48,19 +49,26 @@ app.get('/', (req, res) => {
   res.send('Server Response Success!!!');
 })
 
-app.get('/docs/:document', (req, res) => {
+// app.use('/', test);
+
+app.get('/api/docs/:document', (req, res) => {
   const {document} = req.params
-  const result = query(querys.get_document, [document])
-  res.send(result);
+  console.log("document:", document)
+  client
+  .query(querys.get_document, [document])
+  .then((result) => {
+    res.send(result.rows);
+    console.log(result)})
 })
 
-app.get('/search', (req, res) => {
+app.get('/api/search/:search', (req, res) => {
+  console.log("search!!!!!!!!!!!!!!!!!!")
   const t = (req.query.type ? req.query.type : null)
-  const q = req.query.q
-  const result = null
+  const {q} = req.params
   switch(t){
     case null:
-      result = query(querys.search_title_content, [q])
+      result = query(querys.search_title, [q])
+      // result = query(querys.search_title_content, [q])
     case ('title'):
       result = query(querys.search_title, [q])
     case ('content'):
@@ -88,7 +96,6 @@ app.get('/diff/:document', (req, res) => {
 
 app.post('/edit/:document', (req, res) =>{
   const {document} = req.params
-  const
 })
 
 app.listen(PORT, () => {
