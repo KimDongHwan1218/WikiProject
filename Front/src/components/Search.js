@@ -58,7 +58,7 @@ const Search= () => {
             </div>
           )
         })
-        : <div>결과가 없습니다.</div>}
+        : <div>결과가 현재 없습니다.</div>}
     </div>
   );
 }
