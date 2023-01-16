@@ -1,4 +1,10 @@
-.container {
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.header-container {
   background-color: #930725;
   height: calc(28px + 2vmin);
   display: flex;

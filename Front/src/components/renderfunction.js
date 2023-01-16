@@ -1,18 +1,13 @@
-console.log('ok');
+export default function renderfunction(input){
 
-var editor = document.getElementById('editor');
-var rendered = document.getElementById('rendered');
-var renderButton = document.getElementById('renderButton');
-
-renderButton.addEventListener('click', ()=>{
-  console.log((editor.value))
-  var value = removehtml(editor.value);
+  if(!input) return input
+  var value = removehtml(input);
 
   value = check_line_by_line(value)
   console.log(value)
 
-  rendered.innerHTML = value
-});
+  return value
+};
 
 function removehtml(output){
   output = output.replace(/</g,'&lt;');
@@ -53,13 +48,14 @@ function check_paragraph(input){
   if(input.match(heading)) return('<h1>'+input.match(heading)+'</h1>\n<hr>')
   else if(input.match(paragraph)) return('<h3>'+input.match(paragraph)+'</h3>')
   else if(input.match(smallparagraph)) return('<h5>'+input.match(smallparagraph)+'</h5>')
-  else if(input == '') return('<br/>') // style로 간격 줄여주기
+  else if(input === '') return('<br/>') // style로 간격 줄여주기
   return(input)
 }
 
 // ----으로 구분선
 function check_dividingline(input){
   var dividing = /^----$/
+  console.log("왜 renderfunction은 문제 없지?", input)
   if(input.match(dividing)) return ('<hr>')
   return(input)
 }

@@ -1,45 +1,64 @@
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import axios from "axios";
-import { useEffect, useState, Text } from 'react';
+import { useEffect, useState } from 'react';
 
 const Search= () => {
   const params = useParams();
   const query = params.query;
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([])
   
   const callApi = async()=>{
-    await axios.get('/api/search/:search', {params:{search:query}})
-    .then((res)=>{      
-      const output = res.data;
+    await axios.get(`/api/search/${params.query}${window.location.search}`)
+    .then((res)=>{
+      const output = res.data.rows;
       if(output.length) {
-        setData(output); console.log(output)
+        setData(output);
       }
       else{
-        setData([{page_title: 'nothing', text_beta:'nothing', text_beta_id:'0'}]); console.log({text_beta:'nothing', text_beta_id:'0'})
+        setData([]);
       }
     });
   };
 
+  const SearchBlock = (props) => {
+    return (
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th><h3>{props.page_title}</h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div>{props.text}</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+    )
+  }
+
   useEffect(()=>{
-    setLoading(true);
     callApi();
-    setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div>
       <Link to={"/docs/"+query}> go to {query} Docs </Link>
       <h1>Search</h1>
-      {data.map((row)=>{
-        return (
-          <div key={row.text_beta_id}>
-            page title: {row.page_title}
-            text: {row.text_beta}
-          </div>
-        )
-      })}
+      {data.length
+        ? data.map((row)=>{
+          return (
+            <div key={row.page_id}>
+              <SearchBlock page_title= {row.page_title} text= {row.text}/> 
+            </div>
+          )
+        })
+        : <div>결과가 없습니다.</div>}
     </div>
   );
 }

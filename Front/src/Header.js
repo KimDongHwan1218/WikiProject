@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
+import "./App.css";
 import namu from './assets/namu.png';
 import search from './assets/search.png';
+import axios from "axios";
 
 function Header() {
     const [query, setQuery] = useState("");
     const onSubmit = async() => {
-        if (query){
-            if (query === "nodocs") window.location.href = "/docs/" + query;
-            else window.location.href = "/search/" + query;
-        }      
+        await axios.get(`/api/docs/${query}`)
+        .then((res)=>{      
+        const output = res.data; 
+        if(output.length>=1) {
+            window.location.href = "/docs/" + query;
+        }
+        else{
+            window.location.href = "/search/" + query;
+        }
+        });
     };
 
     const handleOnEnter = e => {
@@ -18,11 +26,11 @@ function Header() {
       };
   
     return (
-        <div className='container'>
+        <div className='header-container'>
             <div className='App-header'>
                 <div className='button-container'>
                     <a role="button" href="/docs/main" className="App-logo">    
-                        <img src={namu} className='logo-img'/>
+                        <img src={namu} className='logo-img' alt='나무위키'/>
                     </a> 
                 </div>
                 
@@ -39,7 +47,7 @@ function Header() {
                         onClick={() => {
                         onSubmit();
                     }}>
-                        <img src={search} className='search-button-img'/>
+                        <img src={search} className='search-button-img' alt='찾기'/>
                     </button>
                 </div>
 
