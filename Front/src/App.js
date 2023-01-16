@@ -9,11 +9,12 @@ import History from "./components/History";
 import Search from "./components/Search";
 import Header from "./Header";
 import NotHome from "./components/NotHome";
-import {  Link, BrowserRouter,  Routes,  Route} from "react-router-dom";
+import "./App.css"
+import { Routes,  Route} from "react-router-dom";
 
 function App() {
   return (
-    <>
+    <div className='App'>
       <Header/>
 
       <Routes>
@@ -24,7 +25,7 @@ function App() {
         <Route path="/history/:query" element={<History/>} />
         <Route path="/search/:query" element={<Search/>} />
       </Routes>
-    </>
+    </div>
   );
 }
 

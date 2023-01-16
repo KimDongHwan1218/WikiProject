@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { redirect } from 'react-router-dom';
-export default class LoginComponent extends Component {
-    render(){
-        return redirect("/search/:위키홈");
-    }
+import { Navigate } from 'react-router-dom';
+const NotHome = () => {
+    return <Navigate to="/docs/main"></Navigate>;
 }
+  
+  
+export default NotHome;
