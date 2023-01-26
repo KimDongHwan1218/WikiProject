@@ -3,16 +3,19 @@ import axios from "axios";
 import { useEffect, useState } from 'react';
 import renderfunction from './renderfunction';
 import "./Design.css";
+import { customAxios } from "./baseurl.ts";
+import { Link } from 'react-router-dom';
 
 const Docs=() =>{
   const params = useParams();
   console.log("params:", params)
   const query = params.query;
   const [data, setData] = useState([]);
+  const [recentchanges, setRecentchanges] = useState([])
   // const [loading, setLoading] = useState(false);
   
   const callApi = async()=>{
-    await axios.get(`/api/docs/${params.query}`)
+    await axios.get(`/api/docs/${params.query}${window.location.search}`)
     .then((res)=>{      
       console.log("resok")
       const output = res.data; 
@@ -24,6 +27,11 @@ const Docs=() =>{
         setData([{text:'nothing', text_id:'0'}]);
       }
     });
+    await axios.get('/api/latest')
+    .then((res)=>{
+      console.log("latest:", res.data.rows)
+      setRecentchanges(res.data.rows)
+    })
   };
 
   useEffect(()=>{
@@ -60,6 +68,11 @@ const Docs=() =>{
       </div>
       <div className='rightside'>
         광고/핫게시물/최근수정
+        {recentchanges.map((row)=>{
+          return(
+            <div key={row.page_title}><a href={`/docs/${row.page_title}`}>{row.page_title} {row.time}</a></div> // Link로하면 리렌더 안돼서 useeffect 발동 안함..
+          )
+        })}
       </div>
     </div>
 

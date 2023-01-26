@@ -5,29 +5,49 @@ import './Design.css'
 import axios from "axios";
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { customAxios } from "./baseurl.ts";
 
 const Editor= () =>{
   const params = useParams();
   const query = params.query;
   const [data, setData] = useState(null);
 
+  // const callApi = async()=>{
+  //   await axios.get(`/api/docs/${params.query}`)
+  //   .then((load_data)=>{
+  //     console.log(load_data)    
+  //     const output = load_data.data[0]; 
+  //     console.log("output:", output)
+  //     if(output) {
+  //       setData(output.text);
+  //       document.getElementById('editor').innerHTML = output.text;  
+  //     }
+  //     else{
+  //       setData(null);
+  //     }
+      
+  //   });
+  // };
+
   const callApi = async()=>{
     await axios.get(`/api/docs/${params.query}`)
-    .then((load_data)=>{
-      console.log(load_data)    
-      const output = load_data.data[0]; 
-      console.log("output:", output)
-      if(output) {
-        setData(output.text);
+    .then((load_data)=>{  
+      const output = load_data.data;
+      if(output.length>=1) {
+        var new_data = ''
+        for (var i of output){
+          console.log("i", i.text)
+          var new_data = new_data + '\n'+i.text
+          console.log("new_data", new_data)
+        }
+        setData(new_data)
+        document.getElementById('editor').innerHTML = new_data;  
       }
       else{
         setData(null);
       }
-      document.getElementById('editor').innerHTML = data;  
     });
   };
-
-  
   // load_origin()
   useEffect(()=>{
     callApi();

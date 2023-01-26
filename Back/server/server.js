@@ -25,12 +25,15 @@ client.connect(err => {
 })
 const querys = {
   get_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev_id = page_current_rev_id and text_id = slot_content_id;",
+  get_old_document: "SELECT * FROM page, text, slots where page_title = $1 and slot_rev_id = $2 and text_id = slot_content_id;",
   // get_document: "SELECT * FROM page, text where page_title = $1;",
-  search_title: "SELECT page_title, text, page_id FROM search, page where page_id = search_page_id and page_title = $1;",
+  search_title: "SELECT page_title, text, page_id FROM search, page where page_id = search_page_id and page_title LIKE '%'||$1||'%';",
   search_content: "SELECT page_title, text, page_id FROM search, page where page_id = search_page_id and text LIKE '%'||$1||'%';",
-  search_title_content:"SELECT page_title, text, page_id FROM search, page, where (page_id = search_page_id and text LIKE '%'||$1||'%') OR page_title=$1;",
-  get_history: "SELECT * FROM revision R NATURAL JOIN page P where page_title = $1;",
+  search_title_content:"SELECT page_title, text, page_id FROM search, page where (page_id = search_page_id and text LIKE '%'||$1||'%') OR page_title LIKE '%'||$1||'%';",
+  get_histories: "SELECT rev_id, rev_timestamp FROM revision, page where page_title = $1 and revision.page_id = page.page_id;",
+  // get_history: "SELECT "
   // get_diff:
+  recent_changes: "SELECT page_title, max(rev_timestamp) as time FROM revision, page where revision.page_id = page.page_id GROUP BY page_title ORDER BY time DESC LIMIT 5;",
 
   is_page: "SELECT page_id FROM page where page_title = $1 and page_current_rev_id > 0;", // 정확한 페이지 체크
   get_page: "SELECT page_id FROM page where page_title = $1;",
@@ -59,10 +62,23 @@ app.get('/', (req, res) => {
   res.send('Server Response Success!!!');
 })
 
+app.get('/api/latest', (req, res) => {
+  client.query(querys.recent_changes,[])
+  .then((result)=>res.send(result))
+})
+
 // app.use('/', test);
 
 app.get('/api/docs/:document', (req, res) => {
-  const {document} = req.params
+  const {document} = req.params //나중에 params.어쩌구 확인 후 수정
+  console.log(req.query)
+  {req.query.rev ? 
+  client
+  .query(querys.get_old_document, [document, req.query.rev])
+  .then((result) => {
+    res.send(result.rows);
+    //console.log(result)
+  }) : 
   client
   .query(querys.get_document, [document])
   .then((result) => {
@@ -70,6 +86,7 @@ app.get('/api/docs/:document', (req, res) => {
     //console.log(result)
   })
   // .then(() => client.end())
+}
 })
 
 app.get('/api/search/:search', (req, res) => {
@@ -100,10 +117,10 @@ app.get('/api/search/:search', (req, res) => {
   
 })
 
-app.get('/history/:document', (req, res) => {
+app.get('/api/history/:document', (req, res) => {
   const {document} = req.params
-  const result = query(querys.get_history, [document])
-  res.send(result);
+  client.query(querys.get_histories, [document])
+  .then((result) => res.send(result))
 })
 
 app.get('/diff/:document', (req, res) => {
