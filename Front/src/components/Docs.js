@@ -5,15 +5,25 @@ import renderfunction from './renderfunction';
 import "./Design.css";
 import { customAxios } from "./baseurl.ts";
 import { Link } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive'
+import * as width from "../config.js"
 
 const Docs=() =>{
   const params = useParams();
   console.log("params:", params)
   const query = params.query;
   const [data, setData] = useState([]);
-  const [recentchanges, setRecentchanges] = useState([])
+
   // const [loading, setLoading] = useState(false);
-  
+  const issmwidth = useMediaQuery({ minWidth: width.smwidth })
+  const ismdwidth= useMediaQuery({ minWidth: width.mdwidth }) && issmwidth
+  const islgwidth = useMediaQuery({ minWidth: width.lgwidth }) && ismdwidth
+  const isxlwidth = useMediaQuery({ minWidth: width.xlwidth }) && islgwidth
+  const is2xlwidth = useMediaQuery({ minWidth: width.twoxlwidth }) && isxlwidth
+
+
+
+
   const callApi = async()=>{
     await axios.get(`/api/docs/${params.query}${window.location.search}`)
     .then((res)=>{      
@@ -27,11 +37,6 @@ const Docs=() =>{
         setData([{text:'nothing', text_id:'0'}]);
       }
     });
-    await axios.get('/api/latest')
-    .then((res)=>{
-      console.log("latest:", res.data.rows)
-      setRecentchanges(res.data.rows)
-    })
   };
 
   useEffect(()=>{
@@ -42,8 +47,7 @@ const Docs=() =>{
   }, []);
   console.log("data now", data)
   return (
-    <div className='container'>
-      <div className='contents'>
+      <div className={isxlwidth ? 'contents-fixed':'contents-shrink'}>
         <div className='top'>
           <div><h1>{data[0] ? data[0].page_title : ""}</h1></div>
           <div className='deh-container'>
@@ -66,16 +70,6 @@ const Docs=() =>{
           )
         })}
       </div>
-      <div className='rightside'>
-        광고/핫게시물/최근수정
-        {recentchanges.map((row)=>{
-          return(
-            <div key={row.page_title}><a href={`/docs/${row.page_title}`}>{row.page_title} {row.time}</a></div> // Link로하면 리렌더 안돼서 useeffect 발동 안함..
-          )
-        })}
-      </div>
-    </div>
-
   );
 };
 

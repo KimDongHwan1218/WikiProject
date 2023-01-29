@@ -33,7 +33,7 @@ const querys = {
   get_histories: "SELECT rev_id, rev_timestamp FROM revision, page where page_title = $1 and revision.page_id = page.page_id;",
   // get_history: "SELECT "
   // get_diff:
-  recent_changes: "SELECT page_title, max(rev_timestamp) as time FROM revision, page where revision.page_id = page.page_id GROUP BY page_title ORDER BY time DESC LIMIT 5;",
+  recent_changes: "SELECT page_title, max(rev_timestamp) as time FROM revision, page where revision.page_id = page.page_id GROUP BY page_title ORDER BY time DESC LIMIT 10;",
 
   is_page: "SELECT page_id FROM page where page_title = $1 and page_current_rev_id > 0;", // 정확한 페이지 체크
   get_page: "SELECT page_id FROM page where page_title = $1;",
