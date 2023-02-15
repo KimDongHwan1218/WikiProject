@@ -65,6 +65,8 @@ const S3upload=() => {
         .send((err) => {
             if (err) console.log(err)
         })
+
+        console.log("업로드 됐나?")
     }
 
     
@@ -143,35 +145,6 @@ const S3upload=() => {
                     ) : null }
                 </Col>
                 </Row>
-            </div>
-            <div>
-                <table className="editor">
-                    <thead>
-                    <tr>
-                        <th><h2>편집 부분</h2></th>
-                        <th><h2>렌더 부분</h2></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                        <textarea
-                            id="editor" 
-                            onChange={(e) => {
-                            setData(e.target.value)
-                            console.log("왜 반영이 늦지?", data)
-                            document.getElementById('rendered').innerHTML = renderfunction(data);
-                            }}
-                        >
-                        </textarea>
-                        </td>
-                        <td><div id="rendered"></div></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <Link to={"/docs/"+query}>
-                    <button onClick={onClickSubmit}>제출</button>
-                </Link>
             </div>
         </div>
     );

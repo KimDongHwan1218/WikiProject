@@ -16,16 +16,16 @@ const Search= () => {
   };
 
     const onSubmit = async() => {
-        await axios.get(`/api/docs/${params.query}`)
-        .then((res)=>{      
-        const output = res.data; 
-        if(output.length>=1) {
-          window.location.href = `/docs/${query}`;
-        }
-        else{
-            window.location.href = `/search/${query}?type=${selected}`;
-        }
-        });
+      await axios.get(`/api/docs/${params.query}`)
+      .then((res)=>{      
+      const output = res.data; 
+      if(output.length>=1) {
+        window.location.href = `/docs/${query}`;
+      }
+      else{
+          window.location.href = `/search/${query}?type=${selected}`;
+      }
+      });
     };
 
     const handleOnEnter = e => {
