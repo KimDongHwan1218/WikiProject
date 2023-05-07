@@ -7,13 +7,12 @@ export default function renderfunction(input){
   
   var value = removehtml(input);
 
-  value = check_line_by_line(value)
+  indexs, value = check_line_by_line(value)
   console.log(value)
 
-  return value
+  return (indexs, value)
 };
 
-// function 
 
 function removehtml(output){
   output = output.replace(/</g,'&lt;');
@@ -36,27 +35,48 @@ function removehtml(output){
 
 function check_line_by_line(input){
   input = input.toString().split("\n")
+  var classification = []
+  var frame = []
   var output = ''
+  var indexs = [] //인덱스는 첫번째 항목 맨 위에 올라가게 됨.
   input.forEach((value, index, array)=>{
-    var res = check_paragraph(value) 
+    var classification, frame, index, res = check_paragraph(value) 
+    indexs.append(index)
     res = check_dividingline(res)
     res = textshape(res)
     res = internal_link(res)
-    
     output = output.concat(res,'\n')
   })
-  return(output)
+  return(indexs, output)
+}
+
+function check_classification(input){
+  var classification = //g
+}
+
+function check_frame(input){
+  var frame = //g
+}
+
+function check_annotation(input){
+  var annotation = //g
 }
 
 function check_paragraph(input){
+
   var heading = /(?<=^==)([^=]+)(?===$)/g
   var paragraph = /(?<=^===)([^=]+)(?====$)/g
   var smallparagraph = /(?<=^====)([^=]+)(?=====$)/g
-  if(input.match(heading)) return('<h1>'+input.match(heading)+'</h1>\n<hr>')
-  else if(input.match(paragraph)) return('<h3>'+input.match(paragraph)+'</h3>')
-  else if(input.match(smallparagraph)) return('<h5>'+input.match(smallparagraph)+'</h5>')
-  else if(input === '') return('<br/>') // style로 간격 줄여주기
-  return(input)
+
+
+  if (input.match(classification)) return (input.match(classification), null, null, null)
+  else if(input.match(frame)) return (null, input.match(frame), null, null)
+  else if(input.match(heading)) return(null, null, input.match(heading), '<h1>'+input.match(heading)+'</h1>\n<hr>')
+  else if(input.match(paragraph)) return(null, null, null, '<h3>'+input.match(paragraph)+'</h3>')
+  else if(input.match(smallparagraph)) return(null, null, null, '<h5>'+input.match(smallparagraph)+'</h5>')
+  else if(input === '') return(null, null, null, '<br/>') // style로 간격 줄여주기
+  else if(input.match(annotation))
+  return (null, null, null,input)
 }
 
 // ----으로 구분선
@@ -89,9 +109,9 @@ function textshape(input){
   return(output)
 }
 
-// function internal_frame(input){
-//   let 
-// }
+function internal_frame(input){ //틀
+  let 
+}
 
 
 function internal_link(input){
@@ -99,15 +119,15 @@ function internal_link(input){
   let link_text = /(?<=\[\[)(.*\|.*)(?=\]\])/g //[[문서이름|보일내용]] 의 문서이름 부분
   let output = input
 
-  if(output.match(link_no_text)){
-    let no_text_count = output.match(link_no_text).length
+  // if(output.match(link_no_text)){
+  //   let no_text_count = output.match(link_no_text).length
 
-    for(let i = 0 ; i < no_text_count ; i++){
-      output = output.replace(/\[\[([^\|\[\]]*)\]\]/,`<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
+  //   for(let i = 0 ; i < no_text_count ; i++){
+  //     output = output.replace(/\[\[([^\|\[\]]*)\]\]/,`<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
+  //   }
+    while(output.match(link_no_text)){
+      output = output.replace(link_no_text, `<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
     }
-    // while(output.match(link_no_text)){
-    //   output = output.replace(link_no_text, `<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
-    // }
   }
   
   // if(output.match(link_text)){
@@ -134,3 +154,5 @@ function external_link(input){
   }
   return output  
 }
+
+// 표

@@ -9,8 +9,16 @@ import axios from "axios";
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { customAxios } from "./baseurl.ts";
+import { useMediaQuery } from 'react-responsive';
+import * as width from "../config.js";
 
 const S3upload=() => {
+    const issmwidth = useMediaQuery({ minWidth: width.smwidth })
+    const ismdwidth= useMediaQuery({ minWidth: width.mdwidth }) && issmwidth
+    const islgwidth = useMediaQuery({ minWidth: width.lgwidth }) && ismdwidth
+    const isxlwidth = useMediaQuery({ minWidth: width.xlwidth }) && islgwidth
+    const is2xlwidth = useMediaQuery({ minWidth: width.twoxlwidth }) && isxlwidth
+
     const [progress , setProgress] = useState(0);
     const [selectedFile, setSelectedFile] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
@@ -121,8 +129,8 @@ const S3upload=() => {
       }, []);
 
     return (
-        <div>
-            <div>
+        <div className={isxlwidth ? 'contents-fixed':'contents-shrink'}>
+            <div className='top'>
                 <Row>
                 <Col><h1>File Upload</h1></Col>
                 </Row>
@@ -148,6 +156,7 @@ const S3upload=() => {
             </div>
         </div>
     );
-}
+
+  };
 
 export default S3upload;

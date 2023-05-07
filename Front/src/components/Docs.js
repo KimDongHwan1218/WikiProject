@@ -5,8 +5,9 @@ import renderfunction from './renderfunction';
 import "./Design.css";
 import { customAxios } from "./baseurl.ts";
 import { Link } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive'
-import * as width from "../config.js"
+import { useMediaQuery } from 'react-responsive';
+import * as width from "../config.js";
+
 
 const Docs=() =>{
   const params = useParams();
