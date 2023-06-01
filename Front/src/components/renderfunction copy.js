@@ -1,16 +1,29 @@
-export default function renderfunction(input){
+function findannotation(input){
   if(!input) {
-    console.log("no rendering input")
-    return input
+    return []
   }
 
-  
+  return ([])
+};
+
+function findindex(input){
+  if(!input) {
+    return ''
+  }
+  var index = removehtml(input);
+  index = index_line_by_line(index)
+
+
+  return index
+};
+
+function renderfunction(input){
+  if(!input) {
+    return input
+  }
   var value = removehtml(input);
-
-  indexs, value = check_line_by_line(value)
-  console.log(value)
-
-  return (indexs, value)
+  value = check_line_by_line(value)
+  return value
 };
 
 
@@ -35,54 +48,83 @@ function removehtml(output){
 
 function check_line_by_line(input){
   input = input.toString().split("\n")
-  var classification = []
-  var frame = []
   var output = ''
-  var indexs = [] //인덱스는 첫번째 항목 맨 위에 올라가게 됨.
   input.forEach((value, index, array)=>{
-    var classification, frame, index, res = check_paragraph(value) 
-    indexs.append(index)
+    var res = check_paragraph(value) 
     res = check_dividingline(res)
     res = textshape(res)
     res = internal_link(res)
+    res = internal_frame(res)
+    
     output = output.concat(res,'\n')
   })
-  return(indexs, output)
+  return(output)
 }
 
-function check_classification(input){
-  var classification = //g
+function index_line_by_line(input){
+  input = input.toString().split("\n")
+  var output = []
+  input.forEach((value, index, array)=>{
+    var val = check_index(value)
+    if(val[1]) output.push(val)
+  })
+
+  var output_string = ''
+  output.forEach((value, index, array)=>{
+    console.log("Gggggggggggggggg", value[0])
+    if (value[1]===1){
+      output_string = output_string + `<a href=#${value[0][0].split(' ').join('')}>${value[0]}</a></br>`
+    }
+    if (value[1]===2){
+      output_string = output_string + `<a href=#${value[0][0].split(' ').join('')}>${value[0]}</a></br>`
+    }
+    if (value[1]===3){
+      output_string = output_string + `<a href=#${value[0][0].split(' ').join('')}>${value[0]}</a></br>`
+    }
+  })
+  return(output_string)
 }
 
-function check_frame(input){
-  var frame = //g
-}
+// function check_classification(input){
+//   var classification = //g
+// }
 
-function check_annotation(input){
-  var annotation = //g
-}
+// function check_frame(input){
+//   var frame = //g
+// }
+
+// function check_annotation(input){
+//   var annotation = //g
+// }
+
 
 function check_paragraph(input){
-
   var heading = /(?<=^==)([^=]+)(?===$)/g
   var paragraph = /(?<=^===)([^=]+)(?====$)/g
   var smallparagraph = /(?<=^====)([^=]+)(?=====$)/g
 
-
-  if (input.match(classification)) return (input.match(classification), null, null, null)
-  else if(input.match(frame)) return (null, input.match(frame), null, null)
-  else if(input.match(heading)) return(null, null, input.match(heading), '<h1>'+input.match(heading)+'</h1>\n<hr>')
-  else if(input.match(paragraph)) return(null, null, null, '<h3>'+input.match(paragraph)+'</h3>')
-  else if(input.match(smallparagraph)) return(null, null, null, '<h5>'+input.match(smallparagraph)+'</h5>')
-  else if(input === '') return(null, null, null, '<br/>') // style로 간격 줄여주기
-  else if(input.match(annotation))
-  return (null, null, null,input)
+  if(input.match(heading)) return(`<h1 id=${input.match(heading)[0].split(' ').join('')}>`+input.match(heading)+'</h1><hr>')
+  else if(input.match(paragraph)) return(`<h2 id=${input.match(paragraph)[0].split(' ').join('')}>`+input.match(paragraph)+'</h2>')
+  else if(input.match(smallparagraph)) return(`<h3 id=${input.match(smallparagraph)[0].split(' ').join('')}>`+input.match(smallparagraph)+'</h3>')
+  else if(input === '') return('<br/>') // style로 간격 줄여주기
+  return(input)
 }
+
+function check_index(input){
+  var heading = /(?<=^==)([^=]+)(?===$)/g
+  var paragraph = /(?<=^===)([^=]+)(?====$)/g
+  var smallparagraph = /(?<=^====)([^=]+)(?=====$)/g
+  if(input.match(heading)) return([input.match(heading), 1])
+  else if(input.match(paragraph)) return([input.match(paragraph), 2])
+  else if(input.match(smallparagraph)) return([input.match(smallparagraph), 3])
+  else return(['', 0])
+}
+
+
 
 // ----으로 구분선
 function check_dividingline(input){
   var dividing = /^----$/
-  console.log("왜 renderfunction은 문제 없지?", input)
   if(input.match(dividing)) return ('<hr>')
   return(input)
 }
@@ -110,8 +152,20 @@ function textshape(input){
 }
 
 function internal_frame(input){ //틀
-  let 
+  var frame = /(?<=^\[include\(틀:)([^=]+)(?=\)\]$)/g
+  if(input.match(frame)) return(`이거 링크가져와야함`+input.match(frame)+'이거<br>')
+  return input
 }
+
+// function image_load(input){ // 페이지 주소를 받으면, 실제 image src 주소로 바꿔줘야함.
+//   let image = /(?<=\[\[)(.*)(?=\]\])/g // 고쳐야함
+//   var output = input
+//   while(output.match(link)) {
+//     output = output.replace(image, `<a href="어쩌구저쩌구/w/${input.match(link)[0]}">`)
+//     output = output.replace(/\]\]/, '</a>')
+//   }
+//   return output
+// }
 
 
 function internal_link(input){
@@ -125,10 +179,10 @@ function internal_link(input){
   //   for(let i = 0 ; i < no_text_count ; i++){
   //     output = output.replace(/\[\[([^\|\[\]]*)\]\]/,`<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
   //   }
-    while(output.match(link_no_text)){
-      output = output.replace(link_no_text, `<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
-    }
-  }
+    // while(output.match(link_no_text)){
+    //   output = output.replace(link_no_text, `<a href="/docs/${input.match(link_no_text)[i]}">${input.match(link_no_text)[i]}</a>`)
+    // }
+
   
   // if(output.match(link_text)){
   //   let text_count = output.match(link_text).length
@@ -156,3 +210,8 @@ function external_link(input){
 }
 
 // 표
+function table(input){
+  var row = /(||)([^=]+)(||)/g
+}
+
+export {renderfunction, findannotation, findindex}

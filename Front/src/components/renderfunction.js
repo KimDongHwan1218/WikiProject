@@ -52,7 +52,7 @@ function check_paragraph(input){
   var heading = /(?<=^==)([^=]+)(?===$)/g
   var paragraph = /(?<=^===)([^=]+)(?====$)/g
   var smallparagraph = /(?<=^====)([^=]+)(?=====$)/g
-  if(input.match(heading)) return('<h1>'+input.match(heading)+'</h1>\n<hr>')
+  if(input.match(heading)) return(`<h1 id=${heading}>`+input.match(heading)+'</h1>\n<hr>')
   else if(input.match(paragraph)) return('<h3>'+input.match(paragraph)+'</h3>')
   else if(input.match(smallparagraph)) return('<h5>'+input.match(smallparagraph)+'</h5>')
   else if(input === '') return('<br/>') // style로 간격 줄여주기

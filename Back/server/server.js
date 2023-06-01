@@ -69,9 +69,9 @@ app.get('/api/latest', (req, res) => {
 
 // app.use('/', test);
 
-app.get('/api/docs/:document', (req, res) => {
+app.get('/api/docs/:document*', (req, res) => {
   const {document} = req.params //나중에 params.어쩌구 확인 후 수정
-  console.log(req.query)
+  // console.log(req.query)
   {req.query.rev ? 
   client
   .query(querys.get_old_document, [document, req.query.rev])
@@ -89,7 +89,7 @@ app.get('/api/docs/:document', (req, res) => {
 }
 })
 
-app.get('/api/search/:search', (req, res) => {
+app.get('/api/search/:search*', (req, res) => {
   const t = (req.query.type ? req.query.type : null)
   console.log("t", req.query)
   const q = req.params.search
@@ -117,13 +117,13 @@ app.get('/api/search/:search', (req, res) => {
   
 })
 
-app.get('/api/history/:document', (req, res) => {
+app.get('/api/history/:document*', (req, res) => {
   const {document} = req.params
   client.query(querys.get_histories, [document])
   .then((result) => res.send(result))
 })
 
-app.get('/diff/:document', (req, res) => {
+app.get('/diff/:document*', (req, res) => {
   const {document} = req.params
   const {rev, revold} = req.query
   const result = query(querys.get_diff, [document, rev, revold])
