@@ -8,6 +8,7 @@
   "name": "d",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "repository": "https://github.com/KimDongHwan1218/WikiProject.git",
   "author": "김동환 <kdhwan1218@gmail.com>",
   "license": "MIT",

@@ -35,6 +35,7 @@ export default function Header() {
   
     return (
         <div>
+            <base href='/'></base>
             <div className='header-container'>
                 <div className={isxlwidth ? 'App-header-fixed' : 'App-header-shrink'}>
                     <div className='button-container'>

@@ -38,7 +38,7 @@ export default function Sidebar() {
                     {recentchanges.map((row)=>{
                         return(
                         <div className='recent-change' key={row.page_title}>
-                            <a href={`/docs/${row.page_title}`}>{row.page_title}</a>
+                            <a href={`http://localhost:3000/docs/${row.page_title}`}>{row.page_title}</a>
                             {/* <div>{row.time}</div> */}
                         </div> // Link로하면 리렌더 안돼서 useeffect 발동 안함..
                         )

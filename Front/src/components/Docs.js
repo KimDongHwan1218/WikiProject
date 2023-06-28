@@ -8,9 +8,10 @@ import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import * as width from "../config.js";
 
+
 // import {hoxy} from "./hoxy.js"
 
-const hoxy = require("./hoxy.js");
+// const hoxy = require("./hoxy.js");
 
 
 
@@ -77,11 +78,12 @@ const Docs=() =>{
   const Content = () => {
     return (
       <div>
-        {data.map((row)=>{
+        <div dangerouslySetInnerHTML={{__html: data}} key={"dsf"}></div>
+        {/* {data.map((row)=>{
           return (
-            <div dangerouslySetInnerHTML={{__html: renderfunction(row.text)}} key={row.text_id}></div>
+            <div dangerouslySetInnerHTML={{__html: row.text}} key={row.text_id}></div>
           )
-        })}
+        })} */}
       </div>
     )
   }
@@ -101,15 +103,19 @@ const Docs=() =>{
   const callApi = async()=>{
     await axios.get(`/api/docs/${params.query}${window.location.search}`)
     .then((res)=>{      
-      const output = res.data; 
-      if(output.length>=1) {
+      const output = res.data.html; 
+      console.log("output:",output)
+      // const output = res.data; 
+      if(output) {
         setData(output); console.log(output)
       }
       else{
         setData([{text:'nothing', text_id:'0'}]);
       }
-    });
+    })
   };
+
+
 
 
   useEffect(()=>{
@@ -119,31 +125,24 @@ const Docs=() =>{
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
   }, []);
-  // return (<div>z</div>)
 
-  const read_require = "<script type='module' src='Docs.js'></script>"
+
+
+
   return (
-  <div>
-    <div dangerouslySetInnerHTML={{__html: read_require}}/>
-    <div dangerouslySetInnerHTML={{__html: "hoxy"}}/>
-  </div>
-)
-
-
-  // return (
-  //   <div className={isxlwidth ? 'contents-fixed':'contents-shrink'}>  
-  //     <div id='headings'>
-  //       <div>
-  //         <Title/>
-  //         <Buttons/>
-  //       </div>
-  //       {/* <RecentChange/> */}
-  //     </div>
-  //     <Index/>
-  //     <Content/>
-  //     {/* <Annotation annotation_list = {data[0].annotation_list}/> */}
-  //   </div>
-  // );
+    <div className={isxlwidth ? 'contents-fixed':'contents-shrink'}>  
+      <div id='headings'>
+        <div>
+          <Title/>
+          <Buttons/>
+        </div>
+        {/* <RecentChange/> */}
+      </div>
+      {/* <Index/> */}
+      <Content/>
+      {/* <Annotation annotation_list = {data[0].annotation_list}/> */}
+    </div>
+  );
 
 };
 

@@ -1,3 +1,4 @@
+const hoxy = require('./hoxy');
 const { Client } = require("pg");
 const client = new Client({
   user: "postgres",
@@ -62,6 +63,12 @@ app.get('/', (req, res) => {
   res.send('Server Response Success!!!');
 })
 
+app.get('/api/wt2html', (req, res) => {
+  const wt = req.wt
+  const ht = hoxy(wt)
+  res.send(ht)
+})
+
 app.get('/api/latest', (req, res) => {
   client.query(querys.recent_changes,[])
   .then((result)=>res.send(result))
@@ -82,8 +89,13 @@ app.get('/api/docs/:document*', (req, res) => {
   client
   .query(querys.get_document, [document])
   .then((result) => {
-    res.send(result.rows);
+    return hoxy.hoxy(result.rows);
     //console.log(result)
+  })
+  .then((result) => {
+    console.log("dddddddddddddd")
+    console.log(result)
+    res.send(result)
   })
   // .then(() => client.end())
 }
